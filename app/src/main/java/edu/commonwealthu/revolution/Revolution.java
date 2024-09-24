@@ -178,10 +178,9 @@ public class Revolution
     public int moves()
     {return gameStates.size();}
 
-    private boolean validAnchor(int x, int y)
+    public boolean validAnchor(int x, int y)
     {
-        if(x>row-2 || y>col-2) return false;
-        return true;
+        return !(x>row-2 || y>col-2);
     }
 
     @Override

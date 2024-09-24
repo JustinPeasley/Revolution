@@ -1,5 +1,7 @@
 package edu.commonwealthu.revolution;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int soldepth = 1;
     private Revolution game= new Revolution(gridWidth,gridLength,soldepth);
 
+    //references for the move button for rotate buttons
+
     private GridLayout gridLayout;  //contains Buttons
     private Button[] buttons;   //displays numbers
 
@@ -47,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         buttons = new Button[gridWidth*gridLength];
 
         setButtons();
+        for(Button button : buttons)
+            button.setOnClickListener(this::move);
         drawBoard();
 
     }
@@ -82,8 +88,12 @@ public class MainActivity extends AppCompatActivity {
                 buttons[i]= new Button(this);
                 buttons[i].setLayoutParams(params);
                 buttons[i].setBackgroundColor(ContextCompat.getColor(this, R.color.white));
-                //buttons[i].setScale
+                buttons[i].setTag(i);
                 gridLayout.addView(buttons[i]);
+
+            // Set an OnClickListener for each button
+            //final View view = ;
+            //buttons[i].setOnClickListener(v -> move(this)); // Pass the index to the move method
 
         }
     }
@@ -100,5 +110,48 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void move(View view){}
+    /**
+     * gets button that was clicked and waits for input on rotation of that button
+     * @param view
+     */
+    private void move(View view){
+        int moveIndex = (Integer) view.getTag();
+
+
+        //test if valid move
+        if(game.validAnchor(moveIndex/3, moveIndex%3))
+        {
+
+            for (Button button:buttons) //Reset button colors
+                    button.setBackgroundColor(-1);
+
+            colorChanger(view);
+            // Set listener for the left rotation button
+            findViewById(R.id.mainLeftButton).setOnClickListener(v -> {
+                // Call method to rotate left
+                game.rotateLeft(moveIndex / 3, moveIndex % 3);
+                drawBoard(); // Update the board
+            });
+
+            // Set listener for the right rotation button
+            findViewById(R.id.mainRightButton).setOnClickListener(v -> {
+                // Call method to rotate right
+                game.rotateRight(moveIndex / 3, moveIndex % 3);
+                drawBoard(); // Update the board
+            });
+
+            drawBoard();
+        }
+    }
+
+    /**
+     * highlights selected 2x2 grid that is set to be rotated
+     * @param view
+     */
+    private void colorChanger(View view){
+        buttons[(Integer)view.getTag()].setBackgroundColor(Color.argb(100,199,248,124));
+        buttons[(Integer)view.getTag()+1].setBackgroundColor(Color.argb(100,199,248,124));
+        buttons[(Integer)view.getTag()+gridWidth].setBackgroundColor(Color.argb(100,199,248,124));
+        buttons[(Integer)view.getTag()+gridWidth+1].setBackgroundColor(Color.argb(100,199,248,124));
+    }
 }

@@ -11,4 +11,7 @@
     <string name="rotateLeft"> Rotate Left</string>
     <string name="undoButtonDescription">Undo the last move.</string>
     <string name="restartButtonDescription">Start a new game.</string>
+
+    <string name="newGame">New Game</string>
+    <string name="About">About</string>
 </resources>
