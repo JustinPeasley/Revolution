@@ -125,7 +125,7 @@ public class Revolution
      * @param row anchor row
      * @param col anchor col
      */
-    public void rotateRight(int col, int row)
+    public void rotateRight(int row, int col)
     {
         if(!validAnchor(row, col)) return;
 
@@ -143,7 +143,7 @@ public class Revolution
      * @param row anchor row
      * @param col anchor col
      */
-    public void rotateLeft(int col, int row)
+    public void rotateLeft(int row, int col)
     {
         if(!validAnchor(row, col)) return;
 
@@ -180,7 +180,8 @@ public class Revolution
 
     public boolean validAnchor(int x, int y)
     {
-        return !(x>row-2 || y>col-2);
+        if(x>row-2 || y>col-2) return false;
+        return true;
     }
 
     @Override

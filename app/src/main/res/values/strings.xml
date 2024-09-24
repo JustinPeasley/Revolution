@@ -12,6 +12,7 @@
     <string name="undoButtonDescription">Undo the last move.</string>
     <string name="restartButtonDescription">Start a new game.</string>
 
-    <string name="newGame">New Game</string>
     <string name="About">About</string>
+    <string name="exit">Exit</string>
+    <string name="copyright">© 2024 Justin Peasley</string>
 </resources>

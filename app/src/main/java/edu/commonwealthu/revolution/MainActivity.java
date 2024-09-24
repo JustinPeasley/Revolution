@@ -1,5 +1,6 @@
 package edu.commonwealthu.revolution;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -7,8 +8,10 @@ import android.os.Bundle;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.core.content.ContextCompat;
@@ -21,12 +24,14 @@ import edu.commonwealthu.revolution.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
 
+    //private Menu optionsMenu;
     private static final int  gridLength= 3;
     private static final int gridWidth = 3;
     private static final int soldepth = 1;
@@ -50,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
         gridLayout = findViewById(R.id.mainGridLayout);
         buttons = new Button[gridWidth*gridLength];
 
+        gridLayout.setRowCount(gridWidth);
+        gridLayout.setColumnCount(gridLength);
+
         setButtons();
         for(Button button : buttons)
             button.setOnClickListener(this::move);
@@ -60,8 +68,50 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        //optionsMenu = menu;
         return true;
     }
+
+
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id=item.getItemId();
+
+        if(id==R.id.menu_about){
+            showCustomDialog(R.layout.dialog_about);
+        }
+        if(id==R.id.menu_exit){
+            //create new game
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Displays a custom alert dialog with a given layout.
+     */
+    private void showCustomDialog(int layoutId) {
+        Utility.showCustomDialog(this, layoutId);
+    }
+
+    /**
+     * Displays a custom dialog using a specified layout.
+     */
+    public static void showCustomDialog(Activity activity, int layoutId) {
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View dialogView = inflater.inflate(layoutId, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setView(dialogView)
+                .setPositiveButton(android.R.string.ok, null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.holo_green_dark);
+        }
+    }
+
 
     /**
      * Initalizes the Buttons for the Gridlayout
