@@ -2,12 +2,11 @@ package edu.commonwealthu.revolution;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,54 +14,68 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.core.content.ContextCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import edu.commonwealthu.revolution.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.ImageButton;
+import android.widget.NumberPicker;
 
+/**
+ * Plays a game of revolution
+ *
+ * @author Justin Peasley
+ */
 public class MainActivity extends AppCompatActivity {
 
-    //private Menu optionsMenu;
-    private static final int  gridLength= 3;
-    private static final int gridWidth = 3;
-    private static final int soldepth = 1;
+    //variables to pass to backend revolution file
+    private static int gridLength= 3;  //row count
+    private static int gridWidth = 3;  //col count
+    private static int soldepth = 1;   //solution depth
     private Revolution game= new Revolution(gridWidth,gridLength,soldepth);
 
-    //references for the move button for rotate buttons
-
-    private GridLayout gridLayout;  //contains Buttons
-    private Button[] buttons;   //displays numbers
+    private SoundManager soundManager; //for sound effects
+    private GridLayout gridLayout;     //contains Buttons
+    private Button[] buttons;          //displays numbers
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //toolbar creation
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         toolbar.showOverflowMenu();
         toolbar.setTitleTextAppearance(this, R.style.Theme_Revolution);
         setSupportActionBar(toolbar);
 
+        //initializing elements of the ui
         gridLayout = findViewById(R.id.mainGridLayout);
         buttons = new Button[gridWidth*gridLength];
+        soundManager = new SoundManager(this);
 
-        gridLayout.setRowCount(gridWidth);
-        gridLayout.setColumnCount(gridLength);
+        gridLayout.setRowCount(gridWidth);      //set row size
+        gridLayout.setColumnCount(gridLength);  //set col size
+        setButtons(); //set buttons in the gridLayout
 
-        setButtons();
+        //tie all buttons to actions
         for(Button button : buttons)
             button.setOnClickListener(this::move);
-        drawBoard();
+        findViewById(R.id.mainRestartButton).setOnClickListener(this::newGame);
+        findViewById(R.id.mainUndoButton).setOnClickListener(this::undo);
 
+        Utility.drawBoard(game, buttons); //draw game
+    }
+
+    /**
+     * Saves the number of frogs and toads, the number of moves made, and the indices of
+     * the moves.
+     */
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //Utility.saveGame(game, outState);
     }
 
     @Override
@@ -81,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             showCustomDialog(R.layout.dialog_about);
         }
         if(id==R.id.menu_exit){
-            //create new game
+            showExitDialog();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -108,13 +121,13 @@ public class MainActivity extends AppCompatActivity {
 
         Window window = dialog.getWindow();
         if (window != null) {
-            window.setBackgroundDrawableResource(android.R.color.holo_green_dark);
+            window.setBackgroundDrawableResource(android.R.color.darker_gray);
         }
     }
 
 
     /**
-     * Initalizes the Buttons for the Gridlayout
+     * Initializes the Buttons for the Gridlayout
      */
     private void setButtons(){
         buttons = new Button[gridWidth*gridLength];
@@ -124,9 +137,9 @@ public class MainActivity extends AppCompatActivity {
 
         //calc size of buttons so grid fits in screen
         int displayWidth = getResources().getDisplayMetrics().widthPixels;
-        int numCells = gridWidth*gridLength;
+        int numCells = buttons.length;
         int buttonSize = (9*displayWidth/10)/gridWidth;
-        
+
         //create each button and add it to the gridlayout
         for (int i = 0; i < buttons.length; i++) {
                 //new params for each button
@@ -139,24 +152,9 @@ public class MainActivity extends AppCompatActivity {
                 buttons[i].setLayoutParams(params);
                 buttons[i].setBackgroundColor(ContextCompat.getColor(this, R.color.white));
                 buttons[i].setTag(i);
+                buttons[i].setTextSize(45);
                 gridLayout.addView(buttons[i]);
 
-            // Set an OnClickListener for each button
-            //final View view = ;
-            //buttons[i].setOnClickListener(v -> move(this)); // Pass the index to the move method
-
-        }
-    }
-
-    private void drawBoard()
-    {
-        int buttonCount=0;
-        for (int i = 0; i < gridLength; i++) {
-            for (int j = 0; j < gridWidth; j++) {
-                System.out.println("butt count = " + buttonCount);
-                buttons[buttonCount].setText(game.getOccupant(i,j));
-                buttonCount++;
-            }
         }
     }
 
@@ -167,30 +165,111 @@ public class MainActivity extends AppCompatActivity {
     private void move(View view){
         int moveIndex = (Integer) view.getTag();
 
-
         //test if valid move
-        if(game.validAnchor(moveIndex/3, moveIndex%3))
+        //note to get row & colum positions can be achieved by dividing the index by colum(gridWidth)
+        if(game.validAnchor(moveIndex/gridWidth, moveIndex%gridWidth))
         {
-
             for (Button button:buttons) //Reset button colors
                     button.setBackgroundColor(-1);
-
             colorChanger(view);
+
             // Set listener for the left rotation button
             findViewById(R.id.mainLeftButton).setOnClickListener(v -> {
                 // Call method to rotate left
-                game.rotateLeft(moveIndex / 3, moveIndex % 3);
-                drawBoard(); // Update the board
+                game.rotateLeft(moveIndex / gridWidth, moveIndex % gridLength);
+                Utility.drawBoard(game, buttons); // Update the board
+                soundManager.playRotateSound();
+                if(game.isOver()){ showCustomToast("YOU WIN!!"); soundManager.playWinSound();}
             });
 
             // Set listener for the right rotation button
             findViewById(R.id.mainRightButton).setOnClickListener(v -> {
                 // Call method to rotate right
-                game.rotateRight(moveIndex / 3, moveIndex % 3);
-                drawBoard(); // Update the board
+                game.rotateRight(moveIndex / gridWidth, moveIndex % gridWidth);
+                Utility.drawBoard(game, buttons); // Update the board
+                soundManager.playRotateSound();
+                if(game.isOver()){ showCustomToast("YOU WIN!!"); soundManager.playWinSound();}
             });
+            Utility.drawBoard(game, buttons);
+        }
+    }
 
-            drawBoard();
+    /**
+     * used to display a custom toast
+     * @param msg what is to be displayed
+     */
+    private void showCustomToast(String msg) {
+        Utility.showCustomToast(this, msg);
+    }
+
+    /**
+     * undoes the moves the user makes all the way to the base
+     * @param view
+     */
+    private void undo(View view) {
+        // If the undo operation succeeds, display the new move
+        // count. Otherwise,display an error toast.
+        if (game.undo()) {
+            Utility.drawBoard(game,buttons);
+            soundManager.playUndoSound();
+        } else {
+            showCustomToast(getString(R.string.undo_fail));
+            soundManager.playFailSound();
+        }
+    }
+
+    /**
+     * Event handler for restart button (starts a new game).
+     */
+    private void newGame(View view) {
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_new_game, null);
+
+        NumberPicker solDepthPicker = dialogView.findViewById(R.id.solDepthPicker);
+        solDepthPicker.setMinValue(1); //min solDepth
+        solDepthPicker.setMaxValue(9); //max solDepth
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView)
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, (v, n) ->
+                {
+                    soldepth = solDepthPicker.getValue(); //set new solution depth from numberPicker
+                    game = new Revolution(gridWidth,gridLength,soldepth); //make new game
+                    Utility.drawBoard(game,buttons); //redraw grid
+
+                    for (Button button:buttons) //Reset button colors
+                        button.setBackgroundColor(-1);
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+
+        //sets base background color
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.darker_gray);
+        }
+    }
+
+    /**
+     * Shows an exit dialog asking if the user wants to exit (if so, terminates).
+     */
+    protected void showExitDialog() {
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_exit, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView)
+                .setNegativeButton(android.R.string.no, null)//on clicking no nothing happens
+                .setPositiveButton(android.R.string.yes, (v, n) -> finish()); //suspends app
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        //sets base background color
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.darker_gray);
         }
     }
 

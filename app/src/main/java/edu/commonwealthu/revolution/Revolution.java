@@ -25,11 +25,20 @@ public class Revolution
     private int[][] table;
     private final Stack<int[][]> gameStates = new Stack<int[][]>();
 
-    //constructors for specified and unspecified dimensions
+    /**
+     *  creates a revolution object
+     * @param solDepth solution depth of the puzzle
+     */
     public Revolution(int solDepth) {
         this(3,3, solDepth); //constructor chaining
     }
 
+    /**
+     * creates a revolution object
+     * @param x col
+     * @param y row
+     * @param solDepth solution depth of the puzzle
+     */
     public Revolution(int x, int y, int solDepth) {
         //check if at least 3,3
         if(x>3 || y>3)
@@ -55,6 +64,9 @@ public class Revolution
         }
     }
 
+    public final int getRow(){return row;}
+    public final int getCol(){return col;}
+
     /**
      * returns the number in col,row position of table
      * @param col col of table
@@ -72,7 +84,7 @@ public class Revolution
     {
         if(gameStates.size()<2) return false;
         table = gameStates.pop();
-        table = gameStates.pop();
+        table = gameStates.peek();
         return true;
     }
 
@@ -173,6 +185,14 @@ public class Revolution
     }
 
     /**
+     *
+     */
+    public int turnsTaken()
+    {
+        return gameStates.size()-1;
+    }
+
+    /**
      * @return moves taken to win
      */
     public int moves()
@@ -183,6 +203,10 @@ public class Revolution
         if(x>row-2 || y>col-2) return false;
         return true;
     }
+
+    public Stack<int[][]> getGameStates(){
+        return gameStates;
+}
 
     @Override
     public String toString()

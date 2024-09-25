@@ -2,17 +2,22 @@
     <string name="app_name">Rev2JP</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
+    <string name="About">About</string>
+    <string name="exit">Exit</string>
+    <string name="copyright">© 2024 Justin Peasley</string>
+    <string name="enter_depth">Enter Solution Depth:</string>
+
+    <!-- content descriptions for ImageButtons -->
     <string name="rotateRight"> Rotate Right</string>
     <string name="rotateLeft"> Rotate Left</string>
     <string name="undoButtonDescription">Undo the last move.</string>
     <string name="restartButtonDescription">Start a new game.</string>
 
-    <string name="About">About</string>
-    <string name="exit">Exit</string>
-    <string name="copyright">© 2024 Justin Peasley</string>
+    <!-- toasts -->
+    <string name="undo_fail">There are no moves to undo.</string>
+    <string name="restart_fail">The game is already in the starting state.</string>
+
 </resources>

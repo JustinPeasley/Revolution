@@ -76,10 +76,5 @@
         tools:ignore="MissingConstraints" />
 
 </LinearLayout>
-    <NumberPicker
-        android:id="@+id/solDepthSelector"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:tooltipText="Select a Solution Depth"
-        tools:ignore="MissingConstraints" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
