@@ -1,5 +1,6 @@
 package edu.commonwealthu.revolution;
 
+import java.io.Serializable;
 import java.util.Stack;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -15,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Justin Peasley
  * 9-9-2024
  */
-public class Revolution
+public class Revolution implements Serializable
 {
     private final int row;
     private final int col;

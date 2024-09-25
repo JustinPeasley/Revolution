@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
     //variables to pass to backend revolution file
     private static int gridLength= 3;  //row count
     private static int gridWidth = 3;  //col count
-    private static int soldepth = 1;   //solution depth
-    private Revolution game= new Revolution(gridWidth,gridLength,soldepth);
+    private static int solDepth = 1;   //solution depth
+    private Revolution game= new Revolution(gridWidth,gridLength,solDepth);
 
     private SoundManager soundManager; //for sound effects
     private GridLayout gridLayout;     //contains Buttons
@@ -55,15 +55,23 @@ public class MainActivity extends AppCompatActivity {
         buttons = new Button[gridWidth*gridLength];
         soundManager = new SoundManager(this);
 
+
+        if(savedInstanceState != null)
+            game = Utility.getState(savedInstanceState);
+
         gridLayout.setRowCount(gridWidth);      //set row size
         gridLayout.setColumnCount(gridLength);  //set col size
         setButtons(); //set buttons in the gridLayout
+
+
 
         //tie all buttons to actions
         for(Button button : buttons)
             button.setOnClickListener(this::move);
         findViewById(R.id.mainRestartButton).setOnClickListener(this::newGame);
         findViewById(R.id.mainUndoButton).setOnClickListener(this::undo);
+
+
 
         Utility.drawBoard(game, buttons); //draw game
     }
@@ -75,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        //Utility.saveGame(game, outState);
+        Utility.saveGame(game, outState);
     }
 
     @Override
@@ -179,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                 game.rotateLeft(moveIndex / gridWidth, moveIndex % gridLength);
                 Utility.drawBoard(game, buttons); // Update the board
                 soundManager.playRotateSound();
-                if(game.isOver()){ showCustomToast("YOU WIN!!"); soundManager.playWinSound();}
+                if(game.isOver()){ showCustomToast(getString(R.string.win)); soundManager.playWinSound();}
             });
 
             // Set listener for the right rotation button
@@ -188,9 +196,12 @@ public class MainActivity extends AppCompatActivity {
                 game.rotateRight(moveIndex / gridWidth, moveIndex % gridWidth);
                 Utility.drawBoard(game, buttons); // Update the board
                 soundManager.playRotateSound();
-                if(game.isOver()){ showCustomToast("YOU WIN!!"); soundManager.playWinSound();}
+                if(game.isOver()){ showCustomToast(getString(R.string.win)); soundManager.playWinSound();}
             });
             Utility.drawBoard(game, buttons);
+        } else{
+            showCustomToast(getString(R.string.invalid));
+            soundManager.playFailSound();
         }
     }
 
@@ -234,8 +245,8 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton(android.R.string.no, null)
                 .setPositiveButton(android.R.string.yes, (v, n) ->
                 {
-                    soldepth = solDepthPicker.getValue(); //set new solution depth from numberPicker
-                    game = new Revolution(gridWidth,gridLength,soldepth); //make new game
+                    solDepth = solDepthPicker.getValue(); //set new solution depth from numberPicker
+                    game = new Revolution(gridWidth,gridLength,solDepth); //make new game
                     Utility.drawBoard(game,buttons); //redraw grid
 
                     for (Button button:buttons) //Reset button colors

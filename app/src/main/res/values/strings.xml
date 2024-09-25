@@ -19,5 +19,7 @@
     <!-- toasts -->
     <string name="undo_fail">There are no moves to undo.</string>
     <string name="restart_fail">The game is already in the starting state.</string>
+    <string name="win">You Win!!</string>
+    <string name="invalid">invalid position</string>
 
 </resources>

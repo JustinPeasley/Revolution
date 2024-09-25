@@ -20,10 +20,7 @@ import java.util.Stack;
 
 
 public class Utility {
-    private static  final String gridWidth="gridWidth";
-    private static  final String gridlength="gridLength";
-    private static  final String move="move";
-    private static final String num_move="moves";
+        private static Toast toast;
     /**
      * Displays a custom dialog using a specified layout.
      */
@@ -39,7 +36,7 @@ public class Utility {
 
         Window window = dialog.getWindow();
         if (window != null) {
-            window.setBackgroundDrawableResource(android.R.color.holo_green_dark);
+            window.setBackgroundDrawableResource(android.R.color.darker_gray);
         }
     }
 
@@ -47,22 +44,21 @@ public class Utility {
      * Writes the state of game to bundle.
      */
     public static void saveGame(Revolution game, Bundle bundle) {
-        int x = game.getRow();
-        int y = game.getCol();
-        bundle.putInt(gridWidth,x);
-        bundle.putInt(gridlength,y);
-        bundle.putInt(num_move,game.moves());
+       bundle.putSerializable("current", game);
+    }
 
-        //bundle.putInt(move, game.getGameStates());
-        //for (int i = 0; i < moves.length; i++) {
-           // bundle.putInt(move + i, moves[i]);
-        //}
+    public static Revolution getState(Bundle bundle)
+    {
+        return (Revolution) bundle.getSerializable("current");
     }
 
     /**
      * Displays a given string in a custom toast.
      */
     public static void showCustomToast(Activity activity, String message) {
+        if (toast != null) toast.cancel(); // cancels any current toast to prevent queuing toast
+
+
         LayoutInflater inflater = activity.getLayoutInflater();
         View layout = inflater.inflate(R.layout.custom_toast,
                 activity.findViewById(R.id.toast_layout_root));
@@ -70,7 +66,7 @@ public class Utility {
         TextView text = layout.findViewById(R.id.toast_text);
         text.setText(message);
 
-        Toast toast = new Toast(activity.getApplicationContext());
+        toast = new Toast(activity.getApplicationContext());
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(layout);
         toast.setGravity(Gravity.CENTER, 0, 0);
