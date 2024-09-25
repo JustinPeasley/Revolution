@@ -1,7 +1,6 @@
 package edu.commonwealthu.revolution;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -39,6 +38,13 @@ public class MainActivity extends AppCompatActivity {
     private GridLayout gridLayout;     //contains Buttons
     private Button[] buttons;          //displays numbers
 
+    /**
+     * Creates the base view of the application which consists of
+     *  a toolbar,
+     *  a grid of 3x3, (user input for grid size in future)
+     *  and horizontal LinearLayout of ImageButtons
+     * @param savedInstanceState if saved state of game then reload to this Bundle
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,30 +61,24 @@ public class MainActivity extends AppCompatActivity {
         buttons = new Button[gridWidth*gridLength];
         soundManager = new SoundManager(this);
 
-
-        if(savedInstanceState != null)
+        if(savedInstanceState != null) //checks if there is a saved instance to load
             game = Utility.getState(savedInstanceState);
 
         gridLayout.setRowCount(gridWidth);      //set row size
         gridLayout.setColumnCount(gridLength);  //set col size
         setButtons(); //set buttons in the gridLayout
 
-
-
         //tie all buttons to actions
         for(Button button : buttons)
             button.setOnClickListener(this::move);
-        findViewById(R.id.mainRestartButton).setOnClickListener(this::newGame);
+        findViewById(R.id.mainNewGame).setOnClickListener(this::newGame);
         findViewById(R.id.mainUndoButton).setOnClickListener(this::undo);
-
-
 
         Utility.drawBoard(game, buttons); //draw game
     }
 
     /**
-     * Saves the number of frogs and toads, the number of moves made, and the indices of
-     * the moves.
+     * Saves game instance of Revolution
      */
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -236,14 +236,16 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_new_game, null);
 
+        //create numberPicker for user inputted solution depth
         NumberPicker solDepthPicker = dialogView.findViewById(R.id.solDepthPicker);
         solDepthPicker.setMinValue(1); //min solDepth
         solDepthPicker.setMaxValue(9); //max solDepth
 
+        //build the alert Dialog window
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView)
-                .setNegativeButton(android.R.string.no, null)
-                .setPositiveButton(android.R.string.yes, (v, n) ->
+                .setNegativeButton(android.R.string.no, null) //cancel button to get out
+                .setPositiveButton(android.R.string.yes, (v, n) ->   //yes create new game button
                 {
                     solDepth = solDepthPicker.getValue(); //set new solution depth from numberPicker
                     game = new Revolution(gridWidth,gridLength,solDepth); //make new game
@@ -259,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
         //sets base background color
         Window window = dialog.getWindow();
         if (window != null) {
-            window.setBackgroundDrawableResource(android.R.color.darker_gray);
+            window.setBackgroundDrawableResource(R.color.light_orange);
         }
     }
 
@@ -270,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_exit, null);
 
+        //build alert dialog window
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView)
                 .setNegativeButton(android.R.string.no, null)//on clicking no nothing happens
@@ -280,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
         //sets base background color
         Window window = dialog.getWindow();
         if (window != null) {
-            window.setBackgroundDrawableResource(android.R.color.darker_gray);
+            window.setBackgroundDrawableResource(R.color.light_orange);
         }
     }
 
@@ -289,9 +292,9 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     private void colorChanger(View view){
-        buttons[(Integer)view.getTag()].setBackgroundColor(Color.argb(100,199,248,124));
-        buttons[(Integer)view.getTag()+1].setBackgroundColor(Color.argb(100,199,248,124));
-        buttons[(Integer)view.getTag()+gridWidth].setBackgroundColor(Color.argb(100,199,248,124));
-        buttons[(Integer)view.getTag()+gridWidth+1].setBackgroundColor(Color.argb(100,199,248,124));
+        buttons[(Integer)view.getTag()].setBackgroundColor(getResources().getColor(R.color.light_orange));
+        buttons[(Integer)view.getTag()+1].setBackgroundColor(getResources().getColor(R.color.light_orange));
+        buttons[(Integer)view.getTag()+gridWidth].setBackgroundColor(getResources().getColor(R.color.light_orange));
+        buttons[(Integer)view.getTag()+gridWidth+1].setBackgroundColor(getResources().getColor(R.color.light_orange));
     }
 }

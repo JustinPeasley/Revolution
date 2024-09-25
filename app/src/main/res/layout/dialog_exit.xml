@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- XML for exit toolbar drop down button-->
 <TextView android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:background="@color/light_blue"
+        android:background="@color/light_green"
         android:text="@string/exit"
         xmlns:android="http://schemas.android.com/apk/res/android" />

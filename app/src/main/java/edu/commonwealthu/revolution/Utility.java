@@ -28,6 +28,7 @@ public class Utility {
         LayoutInflater inflater = activity.getLayoutInflater();
         View dialogView = inflater.inflate(layoutId, null);
 
+        //create Alert dialog window
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setView(dialogView)
                 .setPositiveButton(android.R.string.ok, null);
@@ -36,7 +37,7 @@ public class Utility {
 
         Window window = dialog.getWindow();
         if (window != null) {
-            window.setBackgroundDrawableResource(android.R.color.darker_gray);
+            window.setBackgroundDrawableResource(R.color.light_orange);
         }
     }
 
@@ -84,8 +85,7 @@ public class Utility {
         int buttonCount=0;
         for (int i = 0; i < game.getCol(); i++) {
             for (int j = 0; j < game.getRow(); j++) {
-                System.out.println("butt count = " + buttonCount);
-                buttons[buttonCount].setText(game.getOccupant(i,j));
+                buttons[buttonCount].setText(game.getOccupant(i,j)); //set text of each button
                 buttonCount++;
             }
         }

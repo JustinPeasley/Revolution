@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- XML for the main UI layout consisting of a GridLayout and a toolbar underneath it-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_blue"
+    android:background="@color/light_green"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <!---->
+    <!--a GridLayout to place the numbers as buttons in a grid fashion-->
     <GridLayout
         android:id="@+id/mainGridLayout"
         android:layout_width="wrap_content"
@@ -21,6 +22,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
+    <!-- LinearLayout to display all the ImageButtons for rotateLeft, rotateRight, undo, new_Game-->
     <LinearLayout
         android:id="@+id/mainLinearLayout"
         android:orientation="horizontal"
@@ -32,6 +34,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
+        <!--rotate left button-->
         <ImageButton
             android:id="@+id/mainLeftButton"
             android:layout_width="wrap_content"
@@ -43,6 +46,7 @@
             android:tooltipText="@string/rotateLeft"
             tools:ignore="MissingConstraints" />
 
+        <!-- rotate right button-->
         <ImageButton
             android:id="@+id/mainRightButton"
             android:layout_width="wrap_content"
@@ -54,6 +58,7 @@
             android:tooltipText="@string/rotateLeft"
             tools:ignore="MissingConstraints" />
 
+        <!-- undo button -->
     <ImageButton
         android:id="@+id/mainUndoButton"
         android:layout_width="wrap_content"
@@ -65,8 +70,9 @@
         android:tooltipText="@string/undoButtonDescription"
         tools:ignore="MissingConstraints" />
 
+        <!-- new Game button-->
     <ImageButton
-        android:id="@+id/mainRestartButton"
+        android:id="@+id/mainNewGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/restart"

@@ -186,14 +186,6 @@ public class Revolution implements Serializable
     }
 
     /**
-     *
-     */
-    public int turnsTaken()
-    {
-        return gameStates.size()-1;
-    }
-
-    /**
      * @return moves taken to win
      */
     public int moves()

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- XML for the about toolbar dropdown button-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/light_blue"
+    android:background="@color/light_green"
     android:gravity="center"
     >
 
 
-
+    <!-- displays name of app -->
     <TextView
         android:id="@+id/text_app_name"
         android:layout_width="wrap_content"
@@ -20,6 +21,7 @@
         android:textStyle="bold"
         android:text="@string/app_name" />
 
+    <!-- display copyright claim -->
     <TextView
         android:id="@+id/copyright"
         android:layout_width="wrap_content"
@@ -29,4 +31,15 @@
         android:textSize="28sp"
         android:textStyle="bold"
         android:text="@string/copyright" />
+
+    <!-- displays explanation on how to play the game -->
+    <TextView
+        android:id="@+id/explanation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="18dp"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:text="@string/describe" />
 </LinearLayout>

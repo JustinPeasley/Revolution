@@ -2,8 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="royalBlue">#FF305CDE</color>
-    <color name="light_blue">#FF2196F3</color>
-    <color name="light_green">#FFc7f87c</color>
-    <color name="gray">#FFd9ded2</color>
+    <color name="light_green">#FFDAF7A6</color> <!-- base background color -->
+    <color name="light_orange">#ed8c2b</color> <!-- base secondary color -->
 </resources>
+
