@@ -29,10 +29,10 @@ import android.widget.NumberPicker;
 public class MainActivity extends AppCompatActivity {
 
     //variables to pass to backend revolution file
-    private static int gridLength= 3;  //row count
-    private static int gridWidth = 3;  //col count
+    private static int gridHeight = 4;  //row count
+    private static int gridWidth = 4;  //col count
     private static int solDepth = 1;   //solution depth
-    private Revolution game= new Revolution(gridWidth,gridLength,solDepth);
+    private Revolution game= new Revolution(gridWidth, gridHeight,solDepth);
 
     private SoundManager soundManager; //for sound effects
     private GridLayout gridLayout;     //contains Buttons
@@ -58,15 +58,15 @@ public class MainActivity extends AppCompatActivity {
 
         //initializing elements of the ui
         gridLayout = findViewById(R.id.mainGridLayout);
-        buttons = new Button[gridWidth*gridLength];
+        buttons = new Button[gridWidth * gridHeight];
         soundManager = new SoundManager(this);
 
         if(savedInstanceState != null) //checks if there is a saved instance to load
             game = Utility.getState(savedInstanceState);
 
-        gridLayout.setRowCount(gridWidth);      //set row size
-        gridLayout.setColumnCount(gridLength);  //set col size
-        setButtons(); //set buttons in the gridLayout
+        gridLayout.setRowCount(gridHeight);    //set row size
+        gridLayout.setColumnCount(gridWidth);  //set col size
+        setButtons();                          //set buttons in the gridLayout
 
         //tie all buttons to actions
         for(Button button : buttons)
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.mainNewGame).setOnClickListener(this::newGame);
         findViewById(R.id.mainUndoButton).setOnClickListener(this::undo);
 
-        Utility.drawBoard(game, buttons); //draw game
+        Utility.drawBoard(game, buttons);      //draw game
     }
 
     /**
@@ -86,14 +86,22 @@ public class MainActivity extends AppCompatActivity {
         Utility.saveGame(game, outState);
     }
 
+    /**
+     * @param menu The options menu in which you place your items.
+     * @return true
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        //optionsMenu = menu;
         return true;
     }
 
 
+    /**
+     * takes input and decides what to do in the toolbar menu
+     * @param item The menu item that was selected.
+     * @return item selected specified action
+     */
     public boolean onOptionsItemSelected(MenuItem item)
     {
         int id=item.getItemId();
@@ -107,12 +115,14 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     /**
      * Displays a custom alert dialog with a given layout.
      */
     private void showCustomDialog(int layoutId) {
         Utility.showCustomDialog(this, layoutId);
     }
+
 
     /**
      * Displays a custom dialog using a specified layout.
@@ -138,15 +148,19 @@ public class MainActivity extends AppCompatActivity {
      * Initializes the Buttons for the Gridlayout
      */
     private void setButtons(){
-        buttons = new Button[gridWidth*gridLength];
+        buttons = new Button[gridWidth* gridHeight];
 
         //in case starting new game
         gridLayout.removeAllViews();
 
         //calc size of buttons so grid fits in screen
         int displayWidth = getResources().getDisplayMetrics().widthPixels;
+        int displayHeight = getResources().getDisplayMetrics().heightPixels;
         int numCells = buttons.length;
         int buttonSize = (9*displayWidth/10)/gridWidth;
+
+        //if more rows then col
+        if(displayHeight>displayWidth) buttonSize = (9*displayWidth/10)/ gridWidth;
 
         //create each button and add it to the gridlayout
         for (int i = 0; i < buttons.length; i++) {
@@ -158,9 +172,10 @@ public class MainActivity extends AppCompatActivity {
 
                 buttons[i]= new Button(this);
                 buttons[i].setLayoutParams(params);
-                buttons[i].setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+                buttons[i].setBackgroundColor(ContextCompat.getColor(this,
+                        R.color.white));
                 buttons[i].setTag(i);
-                buttons[i].setTextSize(45);
+                buttons[i].setTextSize(buttonSize*.2f);
                 gridLayout.addView(buttons[i]);
 
         }
@@ -174,7 +189,8 @@ public class MainActivity extends AppCompatActivity {
         int moveIndex = (Integer) view.getTag();
 
         //test if valid move
-        //note to get row & colum positions can be achieved by dividing the index by colum(gridWidth)
+        //note to get row & colum positions can be achieved by dividing the index by
+        // colum(gridWidth)
         if(game.validAnchor(moveIndex/gridWidth, moveIndex%gridWidth))
         {
             for (Button button:buttons) //Reset button colors
@@ -184,10 +200,13 @@ public class MainActivity extends AppCompatActivity {
             // Set listener for the left rotation button
             findViewById(R.id.mainLeftButton).setOnClickListener(v -> {
                 // Call method to rotate left
-                game.rotateLeft(moveIndex / gridWidth, moveIndex % gridLength);
+                game.rotateLeft(moveIndex / gridWidth, moveIndex % gridHeight);
                 Utility.drawBoard(game, buttons); // Update the board
                 soundManager.playRotateSound();
-                if(game.isOver()){ showCustomToast(getString(R.string.win)); soundManager.playWinSound();}
+                if(game.isOver()){ showCustomToast(getString(R.string.win));
+                    soundManager.playWinSound();
+                    newGame(findViewById(R.id.mainNewGame));
+                }
             });
 
             // Set listener for the right rotation button
@@ -196,7 +215,10 @@ public class MainActivity extends AppCompatActivity {
                 game.rotateRight(moveIndex / gridWidth, moveIndex % gridWidth);
                 Utility.drawBoard(game, buttons); // Update the board
                 soundManager.playRotateSound();
-                if(game.isOver()){ showCustomToast(getString(R.string.win)); soundManager.playWinSound();}
+                if(game.isOver()){ showCustomToast(getString(R.string.win));
+                    soundManager.playWinSound();
+                    newGame(findViewById(R.id.mainNewGame));
+                }
             });
             Utility.drawBoard(game, buttons);
         } else{
@@ -218,15 +240,7 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     private void undo(View view) {
-        // If the undo operation succeeds, display the new move
-        // count. Otherwise,display an error toast.
-        if (game.undo()) {
-            Utility.drawBoard(game,buttons);
-            soundManager.playUndoSound();
-        } else {
-            showCustomToast(getString(R.string.undo_fail));
-            soundManager.playFailSound();
-        }
+        Utility.undo(view,game,soundManager,buttons,this);
     }
 
     /**
@@ -248,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.yes, (v, n) ->   //yes create new game button
                 {
                     solDepth = solDepthPicker.getValue(); //set new solution depth from numberPicker
-                    game = new Revolution(gridWidth,gridLength,solDepth); //make new game
+                    game = new Revolution(gridWidth, gridHeight,solDepth); //make new game
                     Utility.drawBoard(game,buttons); //redraw grid
 
                     for (Button button:buttons) //Reset button colors
@@ -256,7 +270,6 @@ public class MainActivity extends AppCompatActivity {
                 });
         AlertDialog dialog = builder.create();
         dialog.show();
-
 
         //sets base background color
         Window window = dialog.getWindow();
@@ -269,32 +282,14 @@ public class MainActivity extends AppCompatActivity {
      * Shows an exit dialog asking if the user wants to exit (if so, terminates).
      */
     protected void showExitDialog() {
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_exit, null);
-
-        //build alert dialog window
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(dialogView)
-                .setNegativeButton(android.R.string.no, null)//on clicking no nothing happens
-                .setPositiveButton(android.R.string.yes, (v, n) -> finish()); //suspends app
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        //sets base background color
-        Window window = dialog.getWindow();
-        if (window != null) {
-            window.setBackgroundDrawableResource(R.color.light_orange);
-        }
+        Utility.showExitDialog(this);
     }
 
     /**
-     * highlights selected 2x2 grid that is set to be rotated
-     * @param view
+     * calls method that highlights selected 2x2 grid that is set to be rotated
+     * @param view for button tags
      */
     private void colorChanger(View view){
-        buttons[(Integer)view.getTag()].setBackgroundColor(getResources().getColor(R.color.light_orange));
-        buttons[(Integer)view.getTag()+1].setBackgroundColor(getResources().getColor(R.color.light_orange));
-        buttons[(Integer)view.getTag()+gridWidth].setBackgroundColor(getResources().getColor(R.color.light_orange));
-        buttons[(Integer)view.getTag()+gridWidth+1].setBackgroundColor(getResources().getColor(R.color.light_orange));
+        Utility.colorChanger(view, buttons, game, this);
     }
 }

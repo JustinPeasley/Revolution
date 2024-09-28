@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="18dp"
-        android:textSize="28sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:text="@string/describe" />
 </LinearLayout>

@@ -5,13 +5,14 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:background="@drawable/toast_background"
+        android:foreground="@drawable/toast_boarder"
         android:gravity="center">
 
     <TextView
             android:id="@+id/toast_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textStyle="bold"
             android:textSize="24sp" />
 </FrameLayout>

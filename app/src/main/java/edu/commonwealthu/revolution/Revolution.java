@@ -188,8 +188,6 @@ public class Revolution implements Serializable
     /**
      * @return moves taken to win
      */
-    public int moves()
-    {return gameStates.size();}
 
     public boolean validAnchor(int x, int y)
     {

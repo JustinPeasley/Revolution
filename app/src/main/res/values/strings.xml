@@ -1,4 +1,6 @@
 <resources>
+    <string name="app_name">Rev2JP</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="next">Next</string>
     <string name="previous">Previous</string>
@@ -9,14 +11,14 @@
     <string name="exit">Exit</string>
 
     <!-- about dialogbox contents -->
-    <string name="app_name">Rev2JP</string>
     <string name="copyright">© 2024 Justin Peasley</string>
-    <string name="describe">a game of revolution is a game of trying to unscramble a grid of
-        scrambled numbers into ascending order. to do this you click on a button signifying the top
-        left button of a 2x2 grid. You can then rotate them using the buttons underneath the grid on
-        the left. The third button from the left is an undo button to restore to any previous move
-        of the game. The button on the right is for starting a new game with your desired difficulty
-        .</string>
+    <string name="describe">A game of revolution is a game of trying to unscramble a grid
+        of scrambled numbers into ascending order. To do this you click on a button
+        signifying the top left button of a 2x2 grid. You can then rotate them using
+        the buttons underneath the grid on the left. The third button from the left is
+        an undo button to restore to any previous move of the game. The button on the
+        right is for starting a new game with your desired difficulty. Good Luck!
+    </string>
 
     <!-- new_game dialog box contents -->
     <string name="enter_depth">Enter Solution Depth:</string>
